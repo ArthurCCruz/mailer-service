@@ -1,0 +1,240 @@
+### Firebase Functions Contact Form Testing
+### Replace YOUR_FUNCTION_URL with your actual Firebase function URL
+
+@baseUrl = http://localhost:5001/portifolio-mailing-service/us-central1/sendContactEmail
+@contentType = application/json
+
+### Test 1: Valid contact form submission
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "message": "This is a test message with enough characters to pass validation."
+}
+
+### Test 2: Valid contact form with international characters
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "José María García",
+  "email": "jose.garcia@example.com",
+  "message": "Hola, este es un mensaje de prueba con caracteres internacionales."
+}
+
+### Test 3: Valid contact form with long message
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Alice Smith",
+  "email": "alice.smith@company.com",
+  "message": "This is a longer message that contains multiple sentences. It should be long enough to pass the minimum character validation. The purpose is to test that the system can handle longer messages properly and that all validation rules are working correctly."
+}
+
+### Test 4: Invalid - Missing name
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "message": "This message is missing the name field."
+}
+
+### Test 5: Invalid - Missing email
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "message": "This message is missing the email field."
+}
+
+### Test 6: Invalid - Missing message
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com"
+}
+
+### Test 7: Invalid - Empty name
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "",
+  "email": "test@example.com",
+  "message": "This message has an empty name field."
+}
+
+### Test 8: Invalid - Invalid email format
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "invalid-email-format",
+  "message": "This message has an invalid email format."
+}
+
+### Test 9: Invalid - Short message
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "Short"
+}
+
+### Test 10: Invalid - Name with numbers
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "John123",
+  "email": "test@example.com",
+  "message": "This message has a name with numbers which should be invalid."
+}
+
+### Test 11: Invalid - Name with special characters
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "John@Doe",
+  "email": "test@example.com",
+  "message": "This message has a name with special characters which should be invalid."
+}
+
+### Test 12: Invalid - Message with only numbers
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "12345678901234567890"
+}
+
+### Test 13: Invalid - Message with only symbols
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "!@#$%^&*()_+{}|:<>?"
+}
+
+### Test 14: Invalid - GET request (should return 405)
+GET {{baseUrl}}
+
+### Test 15: Invalid - PUT request (should return 405)
+PUT {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "This is a PUT request which should be invalid."
+}
+
+### Test 16: CORS preflight request
+OPTIONS {{baseUrl}}
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type
+
+### Test 17: Valid - Edge case with minimum valid name
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Jo",
+  "email": "test@example.com",
+  "message": "This message has the minimum valid name length."
+}
+
+### Test 18: Valid - Edge case with maximum valid name
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "This is a very long name that should be exactly at the maximum allowed length of one hundred characters",
+  "email": "test@example.com",
+  "message": "This message has the maximum valid name length."
+}
+
+### Test 19: Valid - Edge case with minimum valid message
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "123456789a"
+}
+
+### Test 20: Valid - Edge case with maximum valid message (truncated for readability)
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "This is a very long message that contains exactly two thousand characters. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incididunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
+}
+
+### Test 21: Invalid - Name too short
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "J",
+  "email": "test@example.com",
+  "message": "This message has a name that is too short."
+}
+
+### Test 22: Invalid - Name too long
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "This is a very long name that exceeds the maximum allowed length of one hundred characters and should be rejected by the validation system",
+  "email": "test@example.com",
+  "message": "This message has a name that is too long."
+}
+
+### Test 23: Invalid - Message too short
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "123456789"
+}
+
+### Test 24: Invalid - Message too long (this would be a very long message exceeding 2000 characters)
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "message": "This message is intentionally made very long to test the maximum length validation. It should exceed the 2000 character limit and be rejected by the validation system. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incididunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incididunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incididunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incididunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat."
+}
+
+### Test 25: Invalid - Email too long
+POST {{baseUrl}}
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "this.is.a.very.long.email.address.that.exceeds.the.maximum.allowed.length.of.two.hundred.and.fifty.four.characters.and.should.be.rejected.by.the.validation.system@verylongdomainname.com",
+  "message": "This message has an email that is too long."
+}
